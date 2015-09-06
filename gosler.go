@@ -11,10 +11,10 @@ import (
 const MAX_JOB_COUNT = 100
 
 //函数集合
-var funcs = map[string]interface{}{}
+//var funcs = map[string]interface{}{}
 
 //函数参数集合
-var fparams = map[string]([]interface{}){}
+//var fparams = map[string]([]interface{}){}
 
 var local_time *time.Location = time.Local
 
@@ -23,26 +23,32 @@ func ChangeLocalTime(localtime *time.Location) {
 }
 
 type Job struct {
+
+	funcs     map[string]interface{}
+
+	//函数参数集合
+	fparams   map[string]([]interface{})
+
 	//运行间隔 interval * unit 的时间段
-	interval uint64
+	interval  uint64
 
 	//作业调度的方法
-	job_func string
+	job_func  string
 
 	//时间单元
-	unit string
+	unit      string
 
 	//在什么时间调度运行
-	at_time string
+	at_time   string
 
 	//最近一次的执行时间
-	last_run time.Time
+	last_run  time.Time
 
 	//下一次的执行时间
-	next_run time.Time
+	next_run  time.Time
 
 	//运行周期
-	period time.Duration
+	period    time.Duration
 
 	//定义星期几开始
 	start_day time.Weekday
@@ -50,6 +56,8 @@ type Job struct {
 
 func NewJob(interval uint64) *Job {
 	return &Job{
+		funcs :  map[string]interface{}{},
+		fparams: map[string]([]interface{}){},
 		interval:  interval,
 		job_func:  "",
 		unit:      "",
@@ -68,16 +76,16 @@ func (j *Job) Do(job_fun interface{}, params ...interface{}) {
 		panic("作业队列只允许进行函数的调度")
 	}
 	fname := getFunctionName(job_fun)
-	funcs[fname] = job_fun
-	fparams[fname] = params
+	j.funcs[fname] = job_fun
+	j.fparams[fname] = params
 	j.job_func = fname
 	j.scheduleNextRun()
 }
 
 //运行作业 并且 重新调度
 func (j *Job) run() (result []reflect.Value, err error) {
-	f := reflect.ValueOf(funcs[j.job_func])
-	params := fparams[j.job_func]
+	f := reflect.ValueOf(j.funcs[j.job_func])
+	params := j.fparams[j.job_func]
 	if len(params) != f.Type().NumIn() {
 		err = errors.New("The number of param is not adapted.")
 		return
