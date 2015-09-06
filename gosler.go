@@ -373,8 +373,8 @@ func (s *Scheduler) Remove(j interface{}) {
 		}
 	}
 	//元素左移
-	for j := (i + 1); j < s.size; j++ {
-		s.jobs[i] = s.jobs[j]
+	for index := (i + 1); index < s.size; index++ {
+		s.jobs[i] = s.jobs[index]
 		i++
 	}
 	//调度器当前size调整
