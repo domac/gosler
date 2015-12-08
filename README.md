@@ -15,7 +15,7 @@ func task() {
 	fmt.Println("测试运行....")
 }
 
-func taskWithParams(a int, b string) {
+func taskWithParams(a string, b string) {
 	fmt.Println(a, b)
 }
 
@@ -37,7 +37,7 @@ func task() {
 	fmt.Println("测试运行....")
 }
 
-func taskWithParams(a int, b string) {
+func taskWithParams(a string, b string) {
 	fmt.Println(a, b)
 }
 
